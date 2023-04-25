@@ -54,6 +54,7 @@ class TaskDetailActivity : AppCompatActivity() {
                     .apply { putExtra("resultado_detail","resultado" )
                     }
                 setResult(Activity.RESULT_OK, intent)
+                finish()
                 true
             }
             else -> super.onOptionsItemSelected(item)

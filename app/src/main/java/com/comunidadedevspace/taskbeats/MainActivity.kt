@@ -5,18 +5,19 @@ import android.app.Activity
 import android.app.Instrumentation
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.recyclerview.widget.RecyclerView
 
 class MainActivity : AppCompatActivity() {
 
-   private val startForResult = registerForActivityResult(
+    private val startForResult = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
-    ) { result: Instrumentation.ActivityResult ->
-        if (result.resultCode == Activity.RESULT_OK)
-
+    ) { result: ActivityResult ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            // faça algo aqui
+        }
     }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
