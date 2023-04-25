@@ -1,5 +1,6 @@
 package com.comunidadedevspace.taskbeats
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -52,7 +53,7 @@ class TaskDetailActivity : AppCompatActivity() {
                 val intent =Intent()
                     .apply { putExtra("resultado_detail","resultado" )
                     }
-                setResult(RESULT_OK)
+                setResult(Activity.RESULT_OK, intent)
                 true
             }
             else -> super.onOptionsItemSelected(item)

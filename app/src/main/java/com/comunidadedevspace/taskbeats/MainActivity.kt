@@ -10,6 +10,13 @@ import androidx.recyclerview.widget.RecyclerView
 
 class MainActivity : AppCompatActivity() {
 
+   private val startForResult = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result: Instrumentation.ActivityResult ->
+        if (result.resultCode == Activity.RESULT_OK)
+
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -25,7 +32,7 @@ class MainActivity : AppCompatActivity() {
             Task("Title7", "Desc7"),
             Task("Title8", "Desc8"),
             Task("Title9", "Desc9"),
-            Task("Title10", "Desc10"),
+            Task("Title10", "Desc10")
 
 
             )
@@ -37,11 +44,7 @@ class MainActivity : AppCompatActivity() {
     private fun openTaskDetailView(task: Task) {
         val intent = TaskDetailActivity.start(this, task)
 
-        val startForResult = registerForActivityResult(
-            ActivityResultContracts.StartActivityForResult()
-        ) { result: Instrumentation.ActivityResult ->
-            if (result.resultCode == Activity.RESULT_OK)
-        }
+
 
 
         startForResult.launch(intent)
