@@ -5,6 +5,9 @@ import android.app.Activity
 import android.app.Instrumentation
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
+import android.widget.ImageView
+import android.widget.LinearLayout
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.recyclerview.widget.RecyclerView
@@ -12,19 +15,21 @@ import java.io.Serializable
 
 class MainActivity : AppCompatActivity() {
 
-    val taskList = arrayListOf(
-        Task(0,"Title0", "Desc0"),
-        Task(1,"Title1", "Desc1"),
-        Task(2,"Title2", "Desc2"),
-        Task(3,"Title3", "Desc3"),
-        Task(4,"Title4", "Desc4"),
-        Task(5,"Title5", "Desc5"),
-        Task(6,"Title6", "Desc6"),
-        Task(7,"Title7", "Desc7"),
-        Task(8,"Title8", "Desc8"),
-        Task(9,"Title9", "Desc9"),
-        Task(10,"Title10", "Desc10")
+    private var taskList = arrayListOf(
+        Task(0,"Empilhador Toyota", "Empilhador do Joao"),
+        Task(1,"Komatsu", "Giratoria do manuel"),
+        Task(2,"Senneboghen", "Giratoria do jose"),
+        Task(3,"Empilhador Eletrico", "Empilhador do Wang"),
+        Task(4,"Empilhador Manitou", "Empilhador do Nuno"),
+        Task(5,"Senneboghen", "Giratoria do Ricardo"),
+        Task(6,"Maquina do Baldo", "Maquina do Sergio"),
+        Task(7,"Prensa", "Prensa do Agny"),
+        Task(8,"Balanca pequena", "Balanca de dentro , jean"),
+        Task(9,"Balanca de fora", "Balanca Principal"),
+
     )
+
+    private lateinit var ctn_content: LinearLayout
     private val adapter: TaskListAdapter = TaskListAdapter(::openTaskDetailView)
 
     private val startForResult = registerForActivityResult(
@@ -35,9 +40,25 @@ class MainActivity : AppCompatActivity() {
             val data = result.data
             val taskAction = data?.getSerializableExtra(TASK_ACTION_RESULT) as TaskAction
             val task: Task = taskAction.task
+
+            val newList = arrayListOf<Task>()
+                .apply {
+                    addAll(taskList)
+                }
+
+
+
             taskList.remove(task)
 
-            adapter.submit(taskList)
+            if (taskList.size == 0){
+                ctn_content.visibility = View.VISIBLE
+            }
+
+
+
+            adapter.submitList(newList)
+
+            taskList = newList
 
         }
     }
@@ -47,8 +68,8 @@ class MainActivity : AppCompatActivity() {
 
 
 
-
-        adapter.submit(taskList)
+        ctn_content = findViewById(R.id.ctn_content)
+        adapter.submitList(taskList)
 
 
         val rvTask: RecyclerView = findViewById(R.id.rv_task_list)

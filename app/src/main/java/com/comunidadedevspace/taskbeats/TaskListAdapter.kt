@@ -3,20 +3,17 @@ package com.comunidadedevspace.taskbeats
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ListAdapter
 import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 
 class TaskListAdapter(
 
-    private var openDetailView:(task: Task) -> Unit
-    ): RecyclerView.Adapter<TaskListViewHolder>() {
+    private var openTaskDetailView:(task: Task) -> Unit
+    ):ListAdapter<Task, TaskListViewHolder> (){
 
-   private  var listTask: List<Task> = emptyList()
 
-   fun submit(list: List<Task>){
-       listTask = list
-       notifyDataSetChanged()
-   }
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskListViewHolder {
@@ -24,13 +21,23 @@ class TaskListAdapter(
         return TaskListViewHolder(view)
     }
 
-    override fun getItemCount(): Int {
-        return listTask.size
+
+    companion object: DiffUtil.ItemCallback<Task>(){
+        override fun areItemsTheSame(oldItem: Task, newItem: Task): Boolean {
+            return oldItem == newItem
+        }
+
+        override fun areContentsTheSame(oldItem: Task, newItem: Task): Boolean {
+            return oldItem.title == newItem.title &&
+                    oldItem.description == newItem.description
+        }
+
     }
 
+
     override fun onBindViewHolder(holder: TaskListViewHolder, position: Int) {
-        val task = listTask[position]
-        holder.bind(task,openDetailView)
+        val task = getItem(position)
+        holder.bind(task,openTaskDetailView)
     }
 }
 
