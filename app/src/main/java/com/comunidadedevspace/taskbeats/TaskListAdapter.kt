@@ -11,12 +11,12 @@ import androidx.recyclerview.widget.RecyclerView
 class TaskListAdapter(
 
     private var openTaskDetailView:(task: Task) -> Unit
-    ):ListAdapter<Task, TaskListViewHolder> (){
+    ): androidx.recyclerview.widget.ListAdapter<Task,TaskListViewHolder>(TaskListAdapter){
 
 
 
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskListViewHolder {
+     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskListViewHolder {
         val view: View = LayoutInflater.from(parent.context).inflate(R.layout.item_task,parent,false)
         return TaskListViewHolder(view)
     }

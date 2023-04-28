@@ -48,9 +48,9 @@ class MainActivity : AppCompatActivity() {
 
 
 
-            taskList.remove(task)
+            newList.remove(task)
 
-            if (taskList.size == 0){
+            if (newList.size == 0){
                 ctn_content.visibility = View.VISIBLE
             }
 
