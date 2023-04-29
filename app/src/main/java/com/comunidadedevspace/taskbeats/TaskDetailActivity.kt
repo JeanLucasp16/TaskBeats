@@ -3,22 +3,26 @@ package com.comunidadedevspace.taskbeats
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.icu.text.CaseMap.Title
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import android.view.View
 import android.widget.TextView
+import com.google.android.material.snackbar.Snackbar
 
 class TaskDetailActivity : AppCompatActivity() {
 
-   private lateinit var task: Task
+   private  var task: Task? = null
+    private lateinit var  tvTitle: TextView
 
     companion object {
         val TASK_DETAIL_EXTRA = "task.extra.detail"
 
 
-        fun start(context: Context, task: Task): Intent {
+        fun start(context: Context, task: Task?): Intent {
             val intent = Intent(context, TaskDetailActivity::class.java)
                 .apply {
                     putExtra(TASK_DETAIL_EXTRA, task)
@@ -34,11 +38,11 @@ class TaskDetailActivity : AppCompatActivity() {
         setContentView(R.layout.activity_task_detail)
 
 
-         task = intent.getSerializableExtra(TASK_DETAIL_EXTRA) as Task
+         task = intent.getSerializableExtra(TASK_DETAIL_EXTRA) as Task?
 
-        val tvTitle = findViewById<TextView>(R.id.tv_task_title_detail)
+         tvTitle = findViewById(R.id.tv_task_title_detail)
 
-        tvTitle.text = task?.title
+        tvTitle.text = task?.title ?: "Adicione uma Tarefa"
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -52,21 +56,41 @@ class TaskDetailActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId){
             R.id.delete_task -> {
-                val intent =Intent()
-                    .apply {
-                        val actionType = ActionType.DELETE
-                        val taskAction = TaskAction(task, actionType)
-                        putExtra(TASK_ACTION_RESULT,taskAction )
-                    }
-                setResult(Activity.RESULT_OK, intent)
-                finish()
+
+
+                if (task != null){
+                    val intent =Intent()
+                        .apply {
+                            val actionType = ActionType.DELETE
+                            val taskAction = TaskAction(task!!, actionType)
+                            putExtra(TASK_ACTION_RESULT,taskAction )
+                        }
+                    setResult(Activity.RESULT_OK, intent)
+                    finish()
+
+                }else{
+                        showMessage(tvTitle, "Item Not Found")
+                }
+
                 true
             }
             else -> super.onOptionsItemSelected(item)
         }
 
-
     }
+
+    private fun showMessage(view: View, message: String){
+        Snackbar.make(view, message, Snackbar.LENGTH_LONG)
+            .setAction("Action", null)
+            .show()
+    }
+
+
+
 }
+
+
+
+
 
 
