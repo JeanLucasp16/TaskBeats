@@ -3,20 +3,20 @@ package com.comunidadedevspace.taskbeats
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.icu.text.CaseMap.Title
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
-import android.widget.TextView
+import android.widget.Button
+import android.widget.EditText
 import com.google.android.material.snackbar.Snackbar
 
 class TaskDetailActivity : AppCompatActivity() {
 
    private  var task: Task? = null
-    private lateinit var  tvTitle: TextView
+    private lateinit var  btnDone: Button
 
     companion object {
         val TASK_DETAIL_EXTRA = "task.extra.detail"
@@ -39,10 +39,48 @@ class TaskDetailActivity : AppCompatActivity() {
 
 
          task = intent.getSerializableExtra(TASK_DETAIL_EXTRA) as Task?
+        val edtTitle = findViewById<EditText>(R.id.edt_task_title)
+        val edtDescription = findViewById<EditText>(R.id.edt_task_description)
+         btnDone = findViewById<Button>(R.id.btn_done)
 
-         tvTitle = findViewById(R.id.tv_task_title_detail)
 
-        tvTitle.text = task?.title ?: "Adicione uma Tarefa"
+        if (task != null){
+            edtTitle.setText(task!!.title)
+            edtDescription.setText(task!!.description)
+        }
+
+
+        btnDone.setOnClickListener{
+            val title = edtTitle.text.toString()
+            val desc = edtDescription.text.toString()
+
+            if (title.isNotEmpty()&& desc.isNotEmpty()){
+                if (task == null){
+                    addOrUpdateTask(0, title,desc,ActionType.CREATE)
+                }else {
+                    addOrUpdateTask(task!!.id, title,desc,ActionType.UPTADE)
+                }
+            }else{
+                showMessage(it,"Fields are Required ")
+            }
+        }
+
+        // tvTitle = findViewById(R.id.tv_task_title_detail)
+
+        //tvTitle.text = task?.title ?: "Adicione uma Tarefa"
+    }
+
+
+
+    private fun addOrUpdateTask(
+        id: Int,
+        title: String,
+        description:String,
+        actionType: ActionType
+        ){
+        val task = Task(0, title, description)
+        returnAction(task, actionType)
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -59,23 +97,27 @@ class TaskDetailActivity : AppCompatActivity() {
 
 
                 if (task != null){
-                    val intent =Intent()
-                        .apply {
-                            val actionType = ActionType.DELETE
-                            val taskAction = TaskAction(task!!, actionType)
-                            putExtra(TASK_ACTION_RESULT,taskAction )
-                        }
-                    setResult(Activity.RESULT_OK, intent)
-                    finish()
-
+                    returnAction(task!!,ActionType.DELETE)
                 }else{
-                        showMessage(tvTitle, "Item Not Found")
+                        showMessage(btnDone, "Item Not Found")
                 }
 
                 true
             }
             else -> super.onOptionsItemSelected(item)
         }
+
+    }
+
+    private fun returnAction(task: Task, actionType: ActionType){
+        val intent =Intent()
+            .apply {
+                val taskAction = TaskAction(task, actionType.name)
+                putExtra(TASK_ACTION_RESULT,taskAction )
+            }
+        setResult(Activity.RESULT_OK, intent)
+        finish()
+
 
     }
 
