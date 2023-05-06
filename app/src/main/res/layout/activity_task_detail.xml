@@ -5,15 +5,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:layout_margin="16dp"
+
     tools:context=".TaskDetailActivity">
 
-
+<include layout="@layout/toolbar"></include>
 
 <TextView
     style="@style/Title3"
     android:textColor="@color/greenambi"
     android:text="Nome"
+    android:layout_marginStart="8dp"
+    android:layout_marginTop="16dp"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"/>
 
@@ -21,11 +23,14 @@
     <EditText
         style="@style/body1"
         android:id="@+id/edt_task_title"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:hint="Numero Do Eqiupamento"/>
 
     <TextView
+        android:layout_marginStart="8dp"
        style="@style/Title3"
         android:layout_marginTop="8dp"
         android:textColor="@color/greenambi"
@@ -37,16 +42,20 @@
         style="@style/body1"
         android:id="@+id/edt_task_description"
         android:layout_width="match_parent"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
         android:layout_height="48dp"
         android:hint="Detalhes do Eqipamento"
          />
 
     <Button
+        style="@style/ButtonPrimary"
        android:backgroundTint="@color/blueambi"
-        android:textColor="@color/orange"
         android:layout_gravity="bottom"
         android:text="Concluir"
         android:id="@+id/btn_done"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="9dp"/>

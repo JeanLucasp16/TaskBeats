@@ -7,6 +7,9 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <include
+        layout="@layout/toolbar"/>
+
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:backgroundTint="@color/blueambi"
@@ -62,6 +65,7 @@
 
 
     <androidx.recyclerview.widget.RecyclerView
+        android:layout_marginTop="?attr/actionBarSize"
         android:id="@+id/rv_task_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
