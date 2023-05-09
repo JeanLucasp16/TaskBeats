@@ -9,8 +9,12 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
+import androidx.room.Room
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.launch
 import java.io.Serializable
 
 class MainActivity : AppCompatActivity() {
@@ -107,6 +111,20 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+
+
+
+        val dataBase = Room.databaseBuilder(
+            applicationContext,
+            AppDataBase::class.java, "taskbeatas-database"
+        ).build()
+
+
+        val dao = dataBase.taskDao()
+        val task = Task(title =  "Empilhador Toyota", description =  "S/N 123456789")
+        CoroutineScope(IO).launch {
+            dao.insert(task)
+        }
 
 
         ctn_content = findViewById(R.id.ctn_content)
