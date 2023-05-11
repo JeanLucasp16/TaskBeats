@@ -19,22 +19,23 @@ import java.io.Serializable
 
 class MainActivity : AppCompatActivity() {
 
-    private var taskList = arrayListOf(
-        Task(0, "Empilhador Toyota", "S/N 123456789"),
-        Task(1, "Komatsu Giratoria", "S/N 123456789 "),
-        Task(2, "Senneboghen Giratoria", "S/N 123456789"),
-        Task(3, "Empilhador Eletrico", "S/N 123456789"),
-        Task(4, "Empilhador Manitou", "S/N 123456789"),
-        Task(5, "Senneboghen Giratoria", "S/N 123456789"),
-        Task(6, "Maquina do Baldo", "S/N 123456789"),
-        Task(7, "Prensa", "S/N 123456789"),
-        Task(8, "Balanca pequena", "S/N 123456789"),
-        Task(9, "Balanca de fora", "S/N 123456789"),
-
-        )
 
     private lateinit var ctn_content: LinearLayout
+
+
     private val adapter: TaskListAdapter = TaskListAdapter(::onListItemClicked)
+
+    private val dataBase by lazy {
+        Room.databaseBuilder(
+            applicationContext,
+            AppDataBase::class.java, "taskbeatas-database"
+        ).build()
+    }
+
+   private val dao by lazy {
+       dataBase.taskDao()
+   }
+
 
     private val startForResult = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
@@ -47,7 +48,7 @@ class MainActivity : AppCompatActivity() {
 
 
             if (taskAction.actionType == ActionType.DELETE.name){
-                val newList = arrayListOf<Task>()
+                /*val newList = arrayListOf<Task>()
                     .apply {
                         addAll(taskList)
                     }
@@ -64,45 +65,13 @@ class MainActivity : AppCompatActivity() {
 
                 adapter.submitList(newList)
 
-                taskList = newList
+                taskList = newList */
 
             }else if (taskAction.actionType == ActionType.CREATE.name){
-                val newList = arrayListOf<Task>()
-                    .apply {
-                        addAll(taskList)
-                    }
-                newList.add(task)
-
-                showMessage(ctn_content,"Item added ${task.title}")
-
-                adapter.submitList(newList)
-                taskList = newList
+                insertIntoDataBase(task)
             }else if (taskAction.actionType == ActionType.UPTADE.name){
-
-
-                val tempEmptyList = arrayListOf<Task>()
-                taskList.forEach {
-                    if (it.id ==task.id){
-                        val newItem = Task(it.id,
-                            task.title,
-                            task.description)
-
-                        tempEmptyList.add(
-                            newItem
-                        )
-
-                    }else {
-                        tempEmptyList.add(it)
-                    }
-                }
-
-                showMessage(ctn_content,"Item updated ${task.title}")
-                adapter.submitList(tempEmptyList)
-                taskList = tempEmptyList
-
+                updateIntoDataBase(task)
             }
-
-
 
         }
     }
@@ -111,24 +80,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-
-
-
-        val dataBase = Room.databaseBuilder(
-            applicationContext,
-            AppDataBase::class.java, "taskbeatas-database"
-        ).build()
-
-
-        val dao = dataBase.taskDao()
-        val task = Task(title =  "Empilhador Toyota", description =  "S/N 123456789")
-        CoroutineScope(IO).launch {
-            dao.insert(task)
-        }
-
+        listFromDataBase()
 
         ctn_content = findViewById(R.id.ctn_content)
-        adapter.submitList(taskList)
 
 
         val rvTask: RecyclerView = findViewById(R.id.rv_task_list)
@@ -138,10 +92,40 @@ class MainActivity : AppCompatActivity() {
         val fab = findViewById<FloatingActionButton>(R.id.fab)
         fab.setOnClickListener{
             openTaskListDetail(null)
+        }
+    }
 
+    private fun insertIntoDataBase(task: Task){
+        CoroutineScope(IO).launch {
+            dao.insert(task)
+            listFromDataBase()
         }
 
     }
+
+   private fun updateIntoDataBase(task: Task){
+       CoroutineScope(IO).launch {
+           dao.update(task)
+           listFromDataBase()
+       }
+   }
+
+    private fun listFromDataBase(){
+        CoroutineScope(IO).launch {
+            val myDataBaseList: List<Task> = dao.getAll()
+            adapter.submitList(myDataBaseList)
+
+            if (myDataBaseList.isEmpty()){
+               runOnUiThread { ctn_content.visibility = View.VISIBLE }
+
+            }else {
+                runOnUiThread {  ctn_content.visibility = View.GONE }
+
+            }
+        }
+    }
+
+
     private fun showMessage(view: View,message: String){
         Snackbar.make(view, message, Snackbar.LENGTH_LONG)
             .setAction("Action", null)
