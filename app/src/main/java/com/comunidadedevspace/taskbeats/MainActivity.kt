@@ -53,7 +53,7 @@ class MainActivity : AppCompatActivity() {
             when (taskAction.actionType) {
                 ActionType.DELETE.name -> deleteById(task.id)
                 ActionType.CREATE.name -> insertIntoDataBase(task)
-                ActionType.UPTADE.name -> updateIntoDataBase(task)
+                ActionType.UPDATE.name -> updateIntoDataBase(task)
                 }
             }
         }
@@ -164,7 +164,7 @@ class MainActivity : AppCompatActivity() {
 
 enum class  ActionType   {
      DELETE,
-     UPTADE ,
+     UPDATE ,
      CREATE ,
 
 }

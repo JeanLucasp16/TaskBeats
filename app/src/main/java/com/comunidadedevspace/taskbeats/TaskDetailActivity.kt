@@ -60,7 +60,7 @@ class TaskDetailActivity : AppCompatActivity() {
                 if (task == null){
                     addOrUpdateTask(0, title,desc,ActionType.CREATE)
                 }else {
-                    addOrUpdateTask(task!!.id, title,desc,ActionType.UPTADE)
+                    addOrUpdateTask(task!!.id, title,desc,ActionType.UPDATE)
                 }
             }else{
                 showMessage(it,"Fields are Required ")
