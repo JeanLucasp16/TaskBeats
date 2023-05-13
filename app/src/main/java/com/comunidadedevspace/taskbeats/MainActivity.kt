@@ -3,6 +3,9 @@ package com.comunidadedevspace.taskbeats
 
 import android.app.Activity
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.widget.LinearLayout
 import androidx.activity.result.ActivityResult
@@ -47,38 +50,18 @@ class MainActivity : AppCompatActivity() {
             val task: Task = taskAction.task
 
 
-            if (taskAction.actionType == ActionType.DELETE.name){
-                /*val newList = arrayListOf<Task>()
-                    .apply {
-                        addAll(taskList)
-                    }
-
-                newList.remove(task)
-
-                showMessage(ctn_content,"Item Deleted ${task.title}")
-
-                if (newList.size == 0) {
-                    ctn_content.visibility = View.VISIBLE
+            when (taskAction.actionType) {
+                ActionType.DELETE.name -> deleteById(task.id)
+                ActionType.CREATE.name -> insertIntoDataBase(task)
+                ActionType.UPTADE.name -> updateIntoDataBase(task)
                 }
-
-
-
-                adapter.submitList(newList)
-
-                taskList = newList */
-
-            }else if (taskAction.actionType == ActionType.CREATE.name){
-                insertIntoDataBase(task)
-            }else if (taskAction.actionType == ActionType.UPTADE.name){
-                updateIntoDataBase(task)
             }
-
         }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        setSupportActionBar(findViewById(R.id.toolbar))
 
         listFromDataBase()
 
@@ -110,6 +93,21 @@ class MainActivity : AppCompatActivity() {
        }
    }
 
+
+    private fun deleteAll(){
+        CoroutineScope(IO).launch {
+            dao.deleteAll()
+            listFromDataBase()
+        }
+    }
+
+
+    private fun deleteById(id: Int){
+        CoroutineScope(IO).launch {
+            dao.deleteById(id)
+            listFromDataBase()
+        }
+    }
     private fun listFromDataBase(){
         CoroutineScope(IO).launch {
             val myDataBaseList: List<Task> = dao.getAll()
@@ -143,6 +141,24 @@ class MainActivity : AppCompatActivity() {
         startForResult.launch(intent)
 
     }
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+
+        val inflater : MenuInflater = menuInflater
+        inflater.inflate(R.menu.menu_task_list, menu)
+
+        return true
+    }
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId){
+            R.id.delete_all_task -> {
+               deleteAll()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+
+    }
+
 }
 
 

@@ -57,7 +57,7 @@
             android:id="@+id/iv_content"
             android:layout_width="wrap_content"
             android:layout_height="600dp"
-            android:src="@drawable/ambig2" />
+            android:src="@drawable/undraw_note_list_re_r4u9__1_" />
 
 
     </LinearLayout>
